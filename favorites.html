@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Superhero Details</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="list">
+      <h1 id="heroName"></h1>
+      <img id="heroImage" />
+      <div id="heroDetails"></div>
+      <div id="heroList"></div>
+    </div>
+
+    <script src="home_page.js"></script>
+    <script>
+      //adding favorites hero details into favorites.html page
+      let data = localStorage.getItem("user");
+      let hero_data = JSON.parse(data);
+      // console.log(hero_data);
+      const heroList = document.getElementById("list");
+      heroList.innerHTML = "";
+      hero_data.forEach((hero) => {
+        console.log(hero);
+        const heroCard = document.createElement("div");
+        heroCard.className = "hero-card";
+        heroCard.innerHTML = ` <img src="${hero[2]}" alt="${hero[1]}" height = "20px" width = "40px">
+            <h3>${hero[1]}</h3>
+            <button onclick = "removeFavorites(${hero[0]})" id = "remove_fav" className = "hero-card" > Remove From favorites  </button>`;
+        heroList.appendChild(heroCard);
+
+        // document.getElementById('remove_fav').addEventListener('click',removeFavorites());
+      });
+    </script>
+  </body>
+</html>

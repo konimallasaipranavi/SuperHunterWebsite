@@ -1,0 +1,63 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Superhero Details</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1 id="heroName"></h1>
+        <img id="heroImage" alt="Superhero Image">
+        <div id="heroDetails"></div>
+
+    </div>
+    <script src="home_page.js"></script>
+    <script>
+    	const publicKey = '195c5f9566b4d422dca13097eba98cce';
+const privateKey = '8539c4190b58446b1501b73cec4b0ad70193b19a';
+const baseUrl = 'https://gateway.marvel.com:443/v1/public/characters';
+
+//passing id of hero via url to display more details of that superHero
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const heroId = urlParams.get('id');//retrieving id from url parameters
+
+        const fetchHeroDetails = async (id) => {
+            const ts = 1;
+            const hash = '28efea7fc5829753ea47b26901938f4c';
+            const url = `${baseUrl}/${id}?ts=${ts}&apikey=${publicKey}&hash=${hash}`;
+            const response = await fetch(url); //fetching the required matched hero details
+            const data = await response.json();
+            return data.data.results[0];
+        };
+
+        const renderHeroDetails = (hero) => { //displaying hero details on html page
+            document.getElementById('heroName').innerText = hero.name;
+            document.getElementById('heroImage').src = `${hero.thumbnail.path}.${hero.thumbnail.extension}`;
+            document.getElementById('heroImage').style.height = "20%";
+            document.getElementById('heroImage').style.width = "50%";
+
+            document.getElementById('heroDetails').innerHTML = `
+                <p>${hero.description || 'No description available'}</p>
+                <h3>Comics:</h3>
+                <ul>${hero.comics.items.map(comic => `<li>${comic.name}</li>`).join('')}</ul>
+                <h3>Series:</h3>
+                <ul>${hero.series.items.map(series => `<li>${series.name}</li>`).join('')}</ul>
+                <h3>Stories:</h3>
+                <ul>${hero.stories.items.map(story => `<li>${story.name}</li>`).join('')}</ul>
+                <h3>Events:</h3>
+                <ul>${hero.events.items.map(event => `<li>${event.name}</li>`).join('')}</ul>
+            `;
+        };
+
+        (async () => {
+            const hero = await fetchHeroDetails(heroId); //using an asynchronous call to display details ater fetching from given heroId;
+            renderHeroDetails(hero);
+        })();
+    </script>
+</body>
+</html>
